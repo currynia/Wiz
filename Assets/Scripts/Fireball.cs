@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Fireball : MonoBehaviour, DamageSkill
@@ -34,13 +35,6 @@ public class Fireball : MonoBehaviour, DamageSkill
     private void MoveFireball()
     {
         transform.position += direction * speed * Time.deltaTime;
-        if (transform.position.x < gameManager.GetLeftBoundary() ||
-        transform.position.x > gameManager.GetRightBoundary() ||
-        transform.position.y < gameManager.GetBottomBoundary() ||
-        transform.position.y > gameManager.GetTopBoundary())
-        {
-            Destroy(this);
-        }
     }
 
     private void AnimateSprite()
@@ -66,5 +60,13 @@ public class Fireball : MonoBehaviour, DamageSkill
     public GameObject GetGameObject()
     {
         return gameObject;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.gameObject.GetComponent<Player>())
+        {
+            Destroy(gameObject);
+        }
     }
 }

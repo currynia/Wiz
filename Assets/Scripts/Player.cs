@@ -11,6 +11,11 @@ public class Player : MonoBehaviour
     private float lastFireballTime;
 
 
+    private void Start()
+    {
+
+        GetComponent<Rigidbody2D>().useFullKinematicContacts = true;
+    }
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();

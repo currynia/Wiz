@@ -1,22 +1,29 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject ground;
-    private BoxCollider2D groundCollider;
+    public GameObject groundGrid;
+    private Renderer groundRenderer;
 
     private static GameManager reference;
 
     void Awake()
     {
-        groundCollider = ground.GetComponent<BoxCollider2D>();
+        groundRenderer = groundGrid.GetComponentInChildren<Renderer>();
         reference = this;
+
 
     }
 
-    public BoxCollider2D GetGroundCollider()
+    public Renderer GetGroundRenderer()
     {
-        return groundCollider;
+        return groundRenderer;
+    }
+
+    public GameObject GetGroundGrid()
+    {
+        return groundGrid;
     }
 
     public static GameManager GetGameManager()
@@ -26,21 +33,21 @@ public class GameManager : MonoBehaviour
 
     public float GetLeftBoundary()
     {
-        return groundCollider.bounds.min.x;
+        return groundRenderer.bounds.min.x;
     }
 
     public float GetRightBoundary()
     {
-        return groundCollider.bounds.size.x;
+        return groundRenderer.bounds.size.x;
     }
 
     public float GetTopBoundary()
     {
-        return groundCollider.bounds.size.y;
+        return groundRenderer.bounds.size.y;
     }
 
     public float GetBottomBoundary()
     {
-        return groundCollider.bounds.min.y;
+        return groundRenderer.bounds.min.y;
     }
 }
