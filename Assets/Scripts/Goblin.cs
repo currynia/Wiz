@@ -11,7 +11,18 @@ public class Goblin : MonoBehaviour
 
     private Animator animator;
 
-    public float health = 1f;
+    private readonly float _health;
+    public float health
+    {
+        get { return _health; }
+        set
+        {
+            if (_health == 0)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
     void Start()
     {
         gameManager = GameManager.GetGameManager();
@@ -33,15 +44,6 @@ public class Goblin : MonoBehaviour
     void Update()
     {
         Move();
-        Death();
-    }
-
-    private void Death()
-    {
-        if (health <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     private void Move()
