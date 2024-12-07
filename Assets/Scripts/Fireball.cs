@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class Fireball : MonoBehaviour, DamageSkill
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public Sprite[] sprites;
-    private int spriteIndex = 0;
-
     private Vector3 direction;
 
     private SpriteRenderer spriteRenderer;
@@ -28,23 +24,12 @@ public class Fireball : MonoBehaviour, DamageSkill
     }
     void Update()
     {
-        AnimateSprite();
         MoveFireball();
     }
 
     private void MoveFireball()
     {
         transform.position += direction * speed * Time.deltaTime;
-    }
-
-    private void AnimateSprite()
-    {
-        if (spriteIndex >= sprites.Length)
-        {
-            spriteIndex = 0;
-        }
-        spriteRenderer.sprite = sprites[spriteIndex];
-        spriteIndex++;
     }
 
     public float Damage()

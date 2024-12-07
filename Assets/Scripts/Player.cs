@@ -1,8 +1,8 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Sprite[] sprites;
     public float speed = 0.2f;
     private SpriteRenderer spriteRenderer;
 
@@ -10,18 +10,13 @@ public class Player : MonoBehaviour
     private static Player reference;
     private float lastFireballTime;
 
-
+    private Animator animator;
     private void Start()
     {
-
-        GetComponent<Rigidbody2D>().useFullKinematicContacts = true;
-    }
-    private void Awake()
-    {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         reference = this;
     }
-
     private void Update()
     {
         MoveSprite();
@@ -37,7 +32,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space) && Time.time - lastFireballTime >= fireball.CoolDown())
         {
-            Instantiate(fireball.GetGameObject(), transform.position, Quaternion.identity);
+            GameObject newFireball = Instantiate(fireball.GetGameObject(), transform.position, Quaternion.identity);
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newFireball.GetComponent<Collider2D>());
             lastFireballTime = Time.time;
         }
 
@@ -45,30 +41,41 @@ public class Player : MonoBehaviour
 
     private void MoveSprite()
     {
+
+        Vector3 movement = Vector3.zero;
+        Boolean isMoving;
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            spriteRenderer.sprite = sprites[0];
-            gameObject.transform.position += Vector3.up * speed * Time.deltaTime;
-
+            movement += Vector3.up;
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            spriteRenderer.sprite = sprites[0];
-            gameObject.transform.position += Vector3.down * speed * Time.deltaTime;
-
+            movement += Vector3.down;
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            spriteRenderer.sprite = sprites[1];
-            gameObject.transform.position += Vector3.left * speed * Time.deltaTime;
-
+            spriteRenderer.flipX = true;
+            movement += Vector3.left;
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            spriteRenderer.sprite = sprites[2];
-            gameObject.transform.position += Vector3.right * speed * Time.deltaTime;
-
+            spriteRenderer.flipX = false;
+            movement += Vector3.right;
         }
 
+        if (movement != Vector3.zero)
+        {
+            isMoving = true;
+            gameObject.transform.position += movement.normalized * speed * Time.deltaTime;
+        }
+        else
+        {
+            isMoving = false;
+        }
+
+        animator.SetBool("isMoving", isMoving);
+
     }
+
 }

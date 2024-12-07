@@ -1,19 +1,22 @@
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
 
 public class Goblin : MonoBehaviour
 {
     public float speed = 3f;
     private GameManager gameManager;
 
-    public float health = 1f;
+    private SpriteRenderer spriteRenderer;
 
-    void Awake()
-    {
-        gameManager = GameManager.GetGameManager();
-    }
+    private Animator animator;
+
+    public float health = 1f;
     void Start()
     {
+        gameManager = GameManager.GetGameManager();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         IgnoreCollisions();
     }
 
@@ -29,8 +32,7 @@ public class Goblin : MonoBehaviour
     }
     void Update()
     {
-        var step = speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, Player.getPlayer().transform.position, step);
+        Move();
         Death();
     }
 
@@ -40,6 +42,15 @@ public class Goblin : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Move()
+    {
+        var step = speed * Time.deltaTime;
+        Vector3 movement = Vector3.MoveTowards(transform.position, Player.getPlayer().transform.position, step);
+        spriteRenderer.flipX = movement.x < transform.position.x;
+        animator.SetBool("isMoving", transform.position != movement);
+        transform.position = movement;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
