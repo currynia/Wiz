@@ -2708,15 +2708,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -5365498265378735163, guid: 65f829e69073cf4438c8496cac94cf17, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 4.375
+      value: 2.3125
       objectReference: {fileID: 0}
     - target: {fileID: -5365498265378735163, guid: 65f829e69073cf4438c8496cac94cf17, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 3.375
+      value: 2.46875
       objectReference: {fileID: 0}
     - target: {fileID: 7747339452522503926, guid: 65f829e69073cf4438c8496cac94cf17, type: 3}
       propertyPath: m_Name
       value: Torch_Blue_43
+      objectReference: {fileID: 0}
+    - target: {fileID: 7871032502712347721, guid: 65f829e69073cf4438c8496cac94cf17, type: 3}
+      propertyPath: Health
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8128799742556765118, guid: 65f829e69073cf4438c8496cac94cf17, type: 3}
       propertyPath: m_LocalPosition.x

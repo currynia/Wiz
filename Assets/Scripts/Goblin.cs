@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 public class Goblin : MonoBehaviour
 {
@@ -14,23 +15,12 @@ public class Goblin : MonoBehaviour
     public GameObject attackPoint;
 
     public float attackRaidus;
-    private readonly float _health;
-
     public float attackRange;
 
     public LayerMask playerLayer;
-    public float Health
-    {
-        get { return _health; }
-        set
-        {
-            if (_health == 0)
-            {
-                Destroy(gameObject);
-            }
-        }
-    }
+    public float Health;
 
+    public UnityEvent onHealthZero = new();
     private Vector3 position;
 
     void Start()
@@ -39,6 +29,7 @@ public class Goblin : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         IgnoreCollisions();
+        onHealthZero.AddListener(() => animator.SetBool("isDead", true));
     }
 
     private void IgnoreCollisions()
@@ -53,8 +44,6 @@ public class Goblin : MonoBehaviour
     }
     void Update()
     {
-
-
         if (Vector3.Magnitude(transform.position - Player.GetPlayer().transform.position) <= attackRange)
         {
             animator.SetBool("isAttacking", true);
@@ -88,10 +77,20 @@ public class Goblin : MonoBehaviour
 
     private void Attack()
     {
+       
         Collider2D[] player = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRaidus, playerLayer);
         foreach (Collider2D p in player)
         {
             print("Player hit");
+        }
+    }
+
+    private void ReduceHealth(float damage) {
+        Health -= damage;   
+          if (Health <= 0)
+        {
+            Health = 0; 
+            onHealthZero?.Invoke();
         }
     }
 
@@ -100,7 +99,7 @@ public class Goblin : MonoBehaviour
         DamageSkill[] damageSkills = collision.gameObject.GetComponents<DamageSkill>();
         foreach (DamageSkill skill in damageSkills)
         {
-            Health -= skill.Damage();
+            ReduceHealth(skill.Damage());
         }
     }
 
@@ -108,4 +107,9 @@ public class Goblin : MonoBehaviour
     {
         Gizmos.DrawWireSphere(attackPoint.transform.position, attackRaidus);
     }
+
+    private void Death() {
+        Destroy(gameObject);
+    }
+    
 }
