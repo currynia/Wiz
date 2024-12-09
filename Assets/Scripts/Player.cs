@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
         ThrowFireball();
     }
 
-    public static Player getPlayer()
+    public static Player GetPlayer()
     {
         return reference;
     }

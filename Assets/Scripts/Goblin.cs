@@ -11,8 +11,15 @@ public class Goblin : MonoBehaviour
 
     private Animator animator;
 
+    public GameObject attackPoint;
+
+    public float attackRaidus;
     private readonly float _health;
-    public float health
+
+    public float attackRange;
+
+    public LayerMask playerLayer;
+    public float Health
     {
         get { return _health; }
         set
@@ -23,6 +30,9 @@ public class Goblin : MonoBehaviour
             }
         }
     }
+
+    private Vector3 position;
+
     void Start()
     {
         gameManager = GameManager.GetGameManager();
@@ -43,14 +53,30 @@ public class Goblin : MonoBehaviour
     }
     void Update()
     {
-        Move();
+
+
+        if (Vector3.Magnitude(transform.position - Player.GetPlayer().transform.position) <= attackRange)
+        {
+            animator.SetBool("isAttacking", true);
+        }
+        else
+        {
+            animator.SetBool("isAttacking", false);
+            Move();
+        }
     }
 
     private void Move()
     {
         var step = speed * Time.deltaTime;
-        Vector3 movement = Vector3.MoveTowards(transform.position, Player.getPlayer().transform.position, step);
-        spriteRenderer.flipX = movement.x < transform.position.x;
+        Vector3 movement = Vector3.MoveTowards(transform.position, Player.GetPlayer().transform.position, step);
+        position = movement;
+        bool isFacingLeft = movement.x < transform.position.x;
+        spriteRenderer.flipX = isFacingLeft;
+        Vector3 attackPointLocalPosition = attackPoint.transform.localPosition;
+        attackPointLocalPosition.x = Mathf.Abs(attackPointLocalPosition.x) * (isFacingLeft ? -1 : 1);
+        attackPoint.transform.localPosition = attackPointLocalPosition;
+
         animator.SetBool("isMoving", transform.position != movement);
         transform.position = movement;
     }
@@ -60,12 +86,26 @@ public class Goblin : MonoBehaviour
         HandleHitByAttack(collision);
     }
 
+    private void Attack()
+    {
+        Collider2D[] player = Physics2D.OverlapCircleAll(attackPoint.transform.position, attackRaidus, playerLayer);
+        foreach (Collider2D p in player)
+        {
+            print("Player hit");
+        }
+    }
+
     private void HandleHitByAttack(Collision2D collision)
     {
         DamageSkill[] damageSkills = collision.gameObject.GetComponents<DamageSkill>();
         foreach (DamageSkill skill in damageSkills)
         {
-            health -= skill.Damage();
+            Health -= skill.Damage();
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(attackPoint.transform.position, attackRaidus);
     }
 }

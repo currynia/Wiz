@@ -15,11 +15,13 @@ public class Fireball : MonoBehaviour, DamageSkill
 
     public float damage = 1f;
 
-
-    private void Awake()
+    private void Start()
     {
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        direction = Vector3.Normalize(Input.mousePosition - Player.getPlayer().transform.position);
+        direction = Vector3.Normalize(Input.mousePosition - Player.GetPlayer().transform.position);
+        transform.Rotate(0, 0, Vector3.SignedAngle(Vector3.right, direction, new Vector3(0, 0, 1)));
+
+
         gameManager = GameManager.GetGameManager();
     }
     void Update()
